@@ -499,3 +499,31 @@ form.addEventListener("submit", async e => {
     parentName:   $("parentName").value.trim(),
     parentPhone:  $("parentPhone").value.trim()
   };
+
+  sending = true;
+  btn.disabled = true;
+  btn.textContent = "제출 중...";
+
+  try{
+    const res = await fetch(SUBMIT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.result !== "success") throw new Error(data.message || "저장에 실패했습니다.");
+
+    form.style.display = "none";
+    $("done").style.display = "block";
+    $("done").scrollIntoView({block:"start"});
+  }catch(err){
+    formerr.textContent = "신청서를 보내지 못했습니다. 인터넷 연결을 확인한 뒤 다시 눌러 주세요.";
+    formerr.classList.add("on");
+    sending = false;
+    btn.disabled = false;
+    btn.textContent = "신청하기";
+  }
+});
+</script>
+</body>
+</html>
